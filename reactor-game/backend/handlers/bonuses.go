@@ -22,7 +22,7 @@ func GetBonuses(db *sqlx.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//1. Находим пользователя
 		var user models.User
-		err := db.Get(&user, "SELECT * FROM users WHERE id=$1", 3)
+		err := db.Get(&user, "SELECT * FROM users WHERE id=$1", 1)
 		if err != nil {
 			http.Error(w, "user not found", http.StatusNotFound)
 			log.Fatal(err)
