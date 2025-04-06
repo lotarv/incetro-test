@@ -25,6 +25,7 @@ package main
 
 import (
 	"github.com/go-chi/chi/v5"
+	"github.com/pressly/goose/v3"
 	"log"
 	"net/http"
 	"reactor-game/backend/db"
@@ -38,6 +39,14 @@ func main() {
 	}
 	defer database.Close()
 
+	err = goose.SetDialect("postgres")
+	if err != nil {
+		log.Fatalf("failed to set dialect: %v", err)
+	}
+	err = goose.Up(database.DB, "migrations")
+	if err != nil {
+		log.Fatalf("failed to run migrations: %v", err)
+	}
 	router := chi.NewRouter()
 	router.Get("/bonuses", handlers.GetBonuses(database))
 	// router.Post("/bonuses/start", handlers.StartFarming(database))
