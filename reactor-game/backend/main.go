@@ -24,12 +24,14 @@ package main
 // }
 
 import (
-	"github.com/go-chi/chi/v5"
-	"github.com/pressly/goose/v3"
 	"log"
 	"net/http"
 	"reactor-game/backend/db"
 	"reactor-game/backend/handlers"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
+	"github.com/pressly/goose/v3"
 )
 
 func main() {
@@ -48,6 +50,16 @@ func main() {
 		log.Fatalf("failed to run migrations: %v", err)
 	}
 	router := chi.NewRouter()
+
+	// Настраиваем CORS
+	router.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:5173"},
+		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Content-Type"},
+		AllowCredentials: false,
+		MaxAge:           300,
+	}))
+
 	router.Get("/bonuses", handlers.GetBonuses(database))
 	router.Post("/bonuses/start", handlers.StartFarming(database))
 	router.Post("/bonuses/claim", handlers.ClaimBonuses(database))
