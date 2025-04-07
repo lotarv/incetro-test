@@ -2,11 +2,13 @@ package handlers
 
 import (
 	"encoding/json"
-	"github.com/jmoiron/sqlx"
+	"fmt"
 	"log"
 	"net/http"
 	"reactor-game/backend/models"
 	"time"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type BonusResponse struct {
@@ -102,5 +104,56 @@ func StartFarming(db *sqlx.DB) http.HandlerFunc {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("Farming started"))
 
+	}
+}
+
+func ClaimBonuses(db *sqlx.DB) http.HandlerFunc { // /bonuses/claim
+	return func(w http.ResponseWriter, r *http.Request) {
+		var user models.User
+
+		userID := 1
+		err := db.Get(&user, "SELECT * FROM users WHERE id = $1", userID)
+		if err != nil {
+			http.Error(w, "User not found", http.StatusNotFound)
+			return
+		}
+
+		//Находим активный реактор
+
+		var reactor models.Reactor
+
+		err = db.Get(&reactor, "SELECT * FROM reactors WHERE id = $1", user.ActiveReactor)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Reactor not found: %v", err), http.StatusNotFound)
+			return
+		}
+
+		//Проверяем, может ли он заклеймить поинты
+
+		if user.FarmStatus != "farming" || user.FarmStartTime.IsZero() {
+			http.Error(w, "Farming not started of already claimed", http.StatusBadRequest)
+			return
+		}
+
+		elapsed := int(time.Since(*user.FarmStartTime).Seconds())
+		if elapsed < reactor.FarmTime {
+			http.Error(w, "Farming not yet complete", http.StatusBadRequest)
+			return
+		}
+
+		//Начисляем токены и сбрасываем статус
+		newBalance := user.Balance + reactor.TokensPerCycle
+		_, err = db.Exec(`
+		UPDATE users
+		SET balance=$1, farm_status = $2, farm_start_time=NULL
+		WHERE id = $3`, newBalance, "start", userID)
+
+		if err != nil {
+			http.Error(w, "Failed to claim bonuses", http.StatusInternalServerError)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Bonuses claimed"))
 	}
 }

@@ -13,8 +13,8 @@ type User struct {
 }
 
 type Reactor struct {
-	ID              int `db:"id" json:"id"`
-	FarmTime        int `db:"farm_time" json:"farm_time"` // в секундах
-	TokensPerrCycle int `db:"tokens_per_cycle" json:"tokens_per_cycle"`
-	Price           int `db:"price" json:"price"`
+	ID             int `db:"id" json:"id"`
+	FarmTime       int `db:"farm_time" json:"farm_time"` // в секундах
+	TokensPerCycle int `db:"tokens_per_cycle" json:"tokens_per_cycle"`
+	Price          int `db:"price" json:"price"`
 }

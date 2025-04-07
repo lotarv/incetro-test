@@ -50,7 +50,7 @@ func main() {
 	router := chi.NewRouter()
 	router.Get("/bonuses", handlers.GetBonuses(database))
 	router.Post("/bonuses/start", handlers.StartFarming(database))
-	// router.Post("bonuses/claim", handlers.ClaimRewards(database))
+	router.Post("/bonuses/claim", handlers.ClaimBonuses(database))
 
 	// router.Get("reactors", handlers.GetReactors(database))
 	// router.Post("reactors/buy", handlers.BuyReactor(database))
