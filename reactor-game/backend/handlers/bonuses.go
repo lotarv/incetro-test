@@ -2,12 +2,11 @@ package handlers
 
 import (
 	"encoding/json"
+	"github.com/jmoiron/sqlx"
 	"log"
 	"net/http"
 	"reactor-game/backend/models"
 	"time"
-
-	"github.com/jmoiron/sqlx"
 )
 
 type BonusResponse struct {
@@ -55,6 +54,8 @@ func GetBonuses(db *sqlx.DB) http.HandlerFunc {
 		//4. Обработка состояния фарминга
 		if user.FarmStatus == "farming" && user.FarmStartTime != nil {
 			elapsed := int(time.Since(*user.FarmStartTime).Seconds())
+			total := active_reactor.FarmTime
+			resp.Progress = min((elapsed*100)/total, 100)
 			if elapsed >= active_reactor.FarmTime {
 				resp.FarmStatus = "claim"
 				resp.TimeLeft = 0
@@ -66,5 +67,40 @@ func GetBonuses(db *sqlx.DB) http.HandlerFunc {
 		//5. отправка JSON
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(resp)
+	}
+}
+
+func StartFarming(db *sqlx.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var user models.User
+
+		userID := 1
+		//Находим пользователя
+		err := db.Get(&user, "SELECT * FROM users WHERE id=$1", userID)
+		if err != nil {
+			http.Error(w, "User not found", http.StatusNotFound)
+			return
+		}
+
+		//Проверяем, не фармит ли он уже
+		if user.FarmStatus != "start" {
+			http.Error(w, "User is already farming", http.StatusBadRequest)
+			return
+		}
+
+		//Обновляем статус и время начала фарма
+
+		_, err = db.Exec(`
+		UPDATE users
+		SET farm_status=$1, farm_start_time=$2
+		WHERE id = $3`, "farming", time.Now(), userID)
+		if err != nil {
+			http.Error(w, "Failed to start farming", http.StatusInternalServerError)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Farming started"))
+
 	}
 }
