@@ -2,31 +2,69 @@
     <div class="bonuses-container">
         <div class="balance-item">
             <span class="bonuses-icon"><BalanceIcon/></span>
-            <span>1000</span>
+            <span>{{ bonusesStore.state.balance }}</span>
         </div>
         <div class="active-reactor-item">
             <div class="collected-bonuses">
                 <span class="bonuses-icon" ><BalanceIcon/></span>
-                <span>0</span>
+                <span>
+                    {{ 
+                        bonusesStore.state.farm_status === "claim"
+                        ? bonusesStore.state.active_reactor.tokens_per_cycle
+                        : Math.floor((bonusesStore.state.progress / 100) * bonusesStore.state.active_reactor.tokens_per_cycle)
+                     }}
+                </span>
             </div>
             <div class="reactor-image-container">
                 <img class="reactor-image" src="https://placehold.co/350x350" alt="">
             </div>
         </div>
-        <button class="main-button">
-            Start
+        <button
+         class="main-button"
+         :disabled="bonusesStore.state.farm_status=='farming'"
+         @click="handleButtonClick">
+         <span v-if="bonusesStore.state.farm_status === 'start'">Start</span>
+         <span v-else-if="bonusesStore.state.farm_status === 'farming'">Farming ({{ bonusesStore.state.time_left }}s)</span>
+         <span v-else-if="bonusesStore.state.farm_status==='claim'">
+        Claim {{ bonusesStore.state.active_reactor.tokens_per_cycle }}</span>
         </button>
     </div>
 </template>
 
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent, onMounted, onUnmounted} from 'vue'
+import { useBonusesStore } from '@/stores/bonuses';
 import BalanceIcon from '../components/icons/BalanceIcon.vue'
 export default defineComponent({
     name:"Bonuses",
     components: {
         BalanceIcon,
+    },
+
+    setup() {
+        const bonusesStore = useBonusesStore()
+
+        onMounted(() => {
+            bonusesStore.fetchBonuses()
+        })
+
+        onUnmounted(() => {
+            bonusesStore.clearTimer()
+        })
+
+        function handleButtonClick() {
+            if (bonusesStore.state.farm_status === "start") {
+                bonusesStore.startFarming()
+            } else if (bonusesStore.state.farm_status === "claim") {
+                bonusesStore.claimBonuses()
+            }
+        }
+
+        return {
+            bonusesStore,
+            handleButtonClick
+        }
     }
 })
 </script>
