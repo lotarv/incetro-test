@@ -63,7 +63,7 @@ func main() {
 	router.Get("/bonuses", handlers.GetBonuses(database))
 	router.Post("/bonuses/start", handlers.StartFarming(database))
 	router.Post("/bonuses/claim", handlers.ClaimBonuses(database))
-
+	router.Get("/reactors", handlers.GetReactors(database))
 	// router.Get("reactors", handlers.GetReactors(database))
 	// router.Post("reactors/buy", handlers.BuyReactor(database))
 	// router.Post("reactores/use", handlers.UseReactor(database))
