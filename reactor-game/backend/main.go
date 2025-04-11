@@ -43,7 +43,7 @@ func main() {
 	router.Get("/user", handlers.GetUser(database))
 	router.Post("/reactors/buy/{id}", handlers.BuyReactor(database))
 	router.Post("/reactors/use/{id}", handlers.UseReactor(database))
-
+	router.Post("/auth/telegram", handlers.AuthenticateTelegram(database))
 	// router.Get("/top", handlers.GetLeaderboard(database))
 
 	log.Println("Server starting on port 8080...")
