@@ -42,9 +42,7 @@ func main() {
 	router.Get("/reactors", handlers.GetReactors(database))
 	router.Get("/user", handlers.GetUser(database))
 	router.Post("/reactors/buy/{id}", handlers.BuyReactor(database))
-	// router.Get("reactors", handlers.GetReactors(database))
-	// router.Post("reactors/buy", handlers.BuyReactor(database))
-	// router.Post("reactores/use", handlers.UseReactor(database))
+	router.Post("/reactors/use/{id}", handlers.UseReactor(database))
 
 	// router.Get("/top", handlers.GetLeaderboard(database))
 

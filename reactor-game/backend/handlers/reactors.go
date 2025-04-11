@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"reactor-game/backend/models"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/jmoiron/sqlx"
@@ -97,5 +98,64 @@ func BuyReactor(db *sqlx.DB) http.HandlerFunc {
 
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("Reactor bought"))
+	}
+}
+
+func UseReactor(db *sqlx.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		//Взять пользователя
+		var user models.User
+		userID := 1
+		err := db.Get(&user, "SELECT * FROM users WHERE id = $1", userID)
+		if err != nil {
+			http.Error(w, "User not found", http.StatusNotFound)
+			return
+		}
+
+		//Взять айди реактора
+		reactor_id_request := chi.URLParam(r, "id")
+		reactorID, err := strconv.Atoi(reactor_id_request)
+		if err != nil {
+			http.Error(w, "Invalid reactor id", http.StatusBadRequest)
+			return
+		}
+
+		//Если уже установлен как активный, не тратим ресурсы
+		if user.ActiveReactor == reactorID {
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("Reactor was already active"))
+			return
+		}
+		//Проверить, не запущен ли фарм
+		if user.FarmStatus == "farming" {
+			http.Error(w, "Cannot change reactor while farming", http.StatusBadRequest)
+			return
+		}
+		//Проверить, что пользователь владеет реактором
+		var count int
+		err = db.Get(&count, `
+		SELECT COUNT(*) FROM user_reactors
+		WHERE user_id=$1 AND reactor_id=$2`, userID, reactorID)
+		if err != nil {
+			http.Error(w, "Failed to check ownership", http.StatusInternalServerError)
+			return
+		}
+		if count == 0 {
+			http.Error(w, "Reactor not owned", http.StatusBadRequest)
+			return
+		}
+		//Если владеет, установить активный реактор на этот айди
+		_, err = db.Exec(`
+		UPDATE users
+		SET active_reactor = $1
+		WHERE id = $2`, reactorID, userID)
+
+		if err != nil {
+			http.Error(w, "Failed to set active reactor", http.StatusInternalServerError)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Reactor set as active"))
 	}
 }
