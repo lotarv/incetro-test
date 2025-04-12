@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { reactive } from "vue";
 import axios from "axios";
-
+import {API_BASE_URL} from "../config"
 
 
 interface Reactor {
@@ -30,7 +30,7 @@ export const useUserStore = defineStore('user', () => {
 
     async function fetchUser() {
         try {
-            const response = await axios.get(`http://localhost:8080/user?userID=${localStorage.getItem('userID')}`)
+            const response = await axios.get(`${API_BASE_URL}/user?userID=${localStorage.getItem('userID')}`)
             state.ID = response.data.id;
             state.Balance = response.data.balance;
             state.ActiveReactor = response.data.active_reactor;
@@ -43,7 +43,7 @@ export const useUserStore = defineStore('user', () => {
 
     async function buyReactor(reactorID: number) {
         try {
-            await axios.post(`http://localhost:8080/reactors/buy/${reactorID}?userID=${localStorage.getItem('userID')}`)
+            await axios.post(`${API_BASE_URL}/reactors/buy/${reactorID}?userID=${localStorage.getItem('userID')}`)
             await fetchUser()
             return true
         } catch(error) {
@@ -54,7 +54,7 @@ export const useUserStore = defineStore('user', () => {
 
     async function useReactor(reactorID: number) {
         try {
-            await axios.post(`http://localhost:8080/reactors/use/${reactorID}?userID=${localStorage.getItem('userID')}`)
+            await axios.post(`${API_BASE_URL}/reactors/use/${reactorID}?userID=${localStorage.getItem('userID')}`)
             await fetchUser()
             return true
         } catch(error) {

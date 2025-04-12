@@ -125,8 +125,8 @@ export default defineComponent({
 
 .reactor-image{
     border-radius: 50%;
-    width:350px;
-    height:350px;
+    width:250px;
+    height:250px;
 }
 
 .main-button{

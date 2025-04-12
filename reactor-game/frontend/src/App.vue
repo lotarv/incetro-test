@@ -3,7 +3,7 @@
     <div class="content">
       <router-view></router-view>
     </div>
-    <nav v-if="localStorage.getItem('userID')" class="tab-bar">
+    <nav class="tab-bar">
       <router-link class="tab-link" to="/bonuses">
         <span class="tab-icon"><ChipikIcon/></span>
         <span class="tab-text">Bonuses</span>
@@ -44,9 +44,9 @@ export default defineComponent({
 <style scoped>
 .app-container {
   max-width: 480px;
+  max-height: 720px;
   margin:0 auto;
   font-family: 'Montserrat', sans-serif;
-  border: 1px solid #000;
   height:100vh;
   max-height: 930px;
   display: flex;

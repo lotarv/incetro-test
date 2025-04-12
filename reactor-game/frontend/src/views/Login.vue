@@ -9,6 +9,7 @@
 import {defineComponent} from 'vue'
 import {useRouter} from "vue-router" 
 import axios from 'axios'
+import {API_BASE_URL} from "../config"
 
 export default defineComponent({
     name: "Login",
@@ -28,7 +29,7 @@ export default defineComponent({
             console.log('Sending initData:', initData) // Лог для отладки
 
             try {
-                const response = await axios.post("http://localhost:8080/auth/telegram", {initData})
+                const response = await axios.post(`${API_BASE_URL}/auth/telegram`, {initData})
                 const userID = response.data.user_id
                 localStorage.setItem('userID', userID)
                 alert("Login successfull! User ID: " + userID)

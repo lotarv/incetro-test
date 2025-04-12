@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 import { reactive } from "vue";
-
+import {API_BASE_URL} from "../config"
 interface Reactor {
     id:number
     farmTime: number
@@ -20,7 +20,7 @@ export const useReactorsStore = defineStore('reactors', () => {
 
     async function fetchReactors() {
         try {
-            const response = await axios.get(`http://localhost:8080/reactors?userID=${localStorage.getItem('userID')}`)
+            const response = await axios.get(`${API_BASE_URL}/reactors?userID=${localStorage.getItem('userID')}`)
             state.reactors = response.data.map((r: any) => ({
                 id: r.id,
                 farmTime: r.farm_time,

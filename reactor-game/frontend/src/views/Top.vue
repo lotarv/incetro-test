@@ -18,6 +18,7 @@
 import {defineComponent, onMounted, ref} from 'vue'
 import axios from 'axios'
 import BalanceIcon from '../components/icons/BalanceIcon.vue'
+import {API_BASE_URL} from "../config"
 interface UserInfo {
     username: string
     balance: number
@@ -32,7 +33,7 @@ export default defineComponent({
         const usersLeaderboard = ref<UserInfo[]>([])
         onMounted(async () => {
             try{
-                const response = await axios.get("http://localhost:8080/top")
+                const response = await axios.get(`${API_BASE_URL}/top`)
                 usersLeaderboard.value = response.data.rating;
             } catch(error) {
                 console.error("Error fetching users leaderboard: ", error)

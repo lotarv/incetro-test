@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import { reactive } from 'vue'
-
+import {API_BASE_URL} from "../config"
 // Интерфейс для реактора
 interface Reactor {
   id: number
@@ -36,7 +36,7 @@ export const useBonusesStore = defineStore('bonuses', () => {
   // Действия
   const fetchBonuses = async () => {
     try {
-      const response = await axios.get<BonusState>(`http://localhost:8080/bonuses?userID=${localStorage.getItem('userID')}`)
+      const response = await axios.get<BonusState>(`${API_BASE_URL}/bonuses?userID=${localStorage.getItem('userID')}`)
       Object.assign(state, response.data)
       console.log(state)
       if (state.farm_status === 'farming') {
@@ -50,7 +50,7 @@ export const useBonusesStore = defineStore('bonuses', () => {
   const startFarming = async () => {
     if (state.farm_status !== 'start') return
     try {
-      await axios.post(`http://localhost:8080/bonuses/start?userID=${localStorage.getItem('userID')}`)
+      await axios.post(`${API_BASE_URL}/bonuses/start?userID=${localStorage.getItem('userID')}`)
       await fetchBonuses()
     } catch (err) {
       console.error('Failed to start farming:', err)
@@ -60,7 +60,7 @@ export const useBonusesStore = defineStore('bonuses', () => {
   const claimBonuses = async () => {
     if (state.farm_status !== 'claim') return
     try {
-      await axios.post(`http://localhost:8080/bonuses/claim?userID=${localStorage.getItem('userID')}`)
+      await axios.post(`${API_BASE_URL}/bonuses/claim?userID=${localStorage.getItem('userID')}`)
       await fetchBonuses()
     } catch (error) {
       console.error('Failed to claim bonuses:', error)

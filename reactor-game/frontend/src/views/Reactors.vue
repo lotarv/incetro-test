@@ -154,8 +154,8 @@ h2 {
 
 .reactor-image {
     border-radius: 50%;
-    width:400px;
-    height:400px;
+    width:250px;
+    height:250px;
 }
 
 .reactor-info {
