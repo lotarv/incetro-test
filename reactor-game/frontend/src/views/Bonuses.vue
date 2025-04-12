@@ -16,7 +16,7 @@
                 </span>
             </div>
             <div class="reactor-image-container">
-                <img class="reactor-image" src="https://placehold.co/350x350" alt="">
+                <img class="reactor-image" src="https://s3-alpha-sig.figma.com/img/6a83/9f6a/d4c56bfbe7e651a752eec8a82a16ed3b?Expires=1745193600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=LYZzPtrQ4kN0a2mWiMFpTSvtFyMuNL8FhFA5FljksbGQjgvNoi9JWq5l1uz0M2c8gb7i5RR9KMxI~KEj1VJHsmdbYsjWo8WSB94uHRXxcJ4uEEZb-sfKTkWyAQXpBbAPBkJono4k28i1HzbMCZQh4~FEl4fOX6~MjSlmWEaCT9oyPz43nqSj1RbH9ZwKKvb-qAfEeKdmxiIwHPyEYExAlZR9EHw1xGvadxpjscrxwCQyhUci74Q0bmpGbXctAP-GOdK5deC2uIyC6QG9ji4PpM6lweciVvOGpO6Hm7kb7mCqcN7E2nDC8gU8Bo8-lAOjU-LjTBCuxIvZs28mSFbb4Q__" alt="">
             </div>
         </div>
         <button
@@ -125,6 +125,8 @@ export default defineComponent({
 
 .reactor-image{
     border-radius: 50%;
+    width:350px;
+    height:350px;
 }
 
 .main-button{

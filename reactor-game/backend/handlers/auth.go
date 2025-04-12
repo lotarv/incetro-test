@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"reactor-game/backend/models"
 	"sort"
 	"strings"
@@ -89,6 +90,11 @@ func AuthenticateTelegram(db *sqlx.DB) http.HandlerFunc {
 }
 
 func CheckTelegramAuth(initData string) (int64, string, bool, bool) {
+	token := os.Getenv("TELEGRAM_BOT_TOKEN")
+	if token == "" {
+		log.Println("TELEGRAM_BOT_TOKEN is not set")
+		return 0, "", false, false
+	}
 	parsedData, _ := url.QueryUnescape(initData)
 	chunks := strings.Split(parsedData, "&")
 	var dataPairs [][]string
@@ -132,7 +138,7 @@ func CheckTelegramAuth(initData string) (int64, string, bool, bool) {
 
 	// Create the secret key using HMAC and the given token
 	h := hmac.New(sha256.New, []byte("WebAppData"))
-	h.Write([]byte("7767502100:AAFMs9ALGfcQ1Mik1hbGr66Nb9hDQCBe-yU")) // Убедись, что токен верный
+	h.Write([]byte(token)) // Убедись, что токен верный
 	secretKey := h.Sum(nil)
 
 	// Create the data check using the secret key and initData

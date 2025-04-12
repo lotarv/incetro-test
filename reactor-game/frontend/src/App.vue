@@ -3,7 +3,7 @@
     <div class="content">
       <router-view></router-view>
     </div>
-    <nav class="tab-bar">
+    <nav v-if="localStorage.getItem('userID')" class="tab-bar">
       <router-link class="tab-link" to="/bonuses">
         <span class="tab-icon"><ChipikIcon/></span>
         <span class="tab-text">Bonuses</span>
@@ -31,6 +31,11 @@ export default defineComponent({
     ChipikIcon,
     LightningIcon,
     TopIcon,
+  },
+  setup() {
+    return {
+      localStorage
+    }
   }
 })
 

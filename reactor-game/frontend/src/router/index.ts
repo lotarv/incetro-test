@@ -5,7 +5,7 @@ import Login from "../views/Login.vue"
 import Top from "../views/Top.vue"
 
 const routes = [
-    {path: "/", redirect: "/top"},
+    {path: "/", redirect: "/login"},
     {path: "/bonuses", component: Bonuses},
     {path: "/reactors", component: Reactors},
     {path: "/top", component: Top},

@@ -13,6 +13,7 @@ services:
       - DB_PASSWORD=password
       - DB_NAME=reactor_game
       - DB_PORT=5432
+      - TELEGRAM_BOT_TOKEN=7767502100:AAFMs9ALGfcQ1Mik1hbGr66Nb9hDQCBe-yU
     volumes:
       - ./backend/migrations:/app/migrations
 
