@@ -36,8 +36,7 @@ export const useBonusesStore = defineStore('bonuses', () => {
   // Действия
   const fetchBonuses = async () => {
     try {
-      const response = await axios.get<BonusState>('http://localhost:8080/bonuses')
-      console.log(response.data)
+      const response = await axios.get<BonusState>(`http://localhost:8080/bonuses?userID=${localStorage.getItem('userID')}`)
       Object.assign(state, response.data)
       console.log(state)
       if (state.farm_status === 'farming') {
@@ -51,7 +50,7 @@ export const useBonusesStore = defineStore('bonuses', () => {
   const startFarming = async () => {
     if (state.farm_status !== 'start') return
     try {
-      await axios.post('http://localhost:8080/bonuses/start')
+      await axios.post(`http://localhost:8080/bonuses/start?userID=${localStorage.getItem('userID')}`)
       await fetchBonuses()
     } catch (err) {
       console.error('Failed to start farming:', err)
@@ -61,7 +60,7 @@ export const useBonusesStore = defineStore('bonuses', () => {
   const claimBonuses = async () => {
     if (state.farm_status !== 'claim') return
     try {
-      await axios.post('http://localhost:8080/bonuses/claim')
+      await axios.post(`http://localhost:8080/bonuses/claim?userID=${localStorage.getItem('userID')}`)
       await fetchBonuses()
     } catch (error) {
       console.error('Failed to claim bonuses:', error)

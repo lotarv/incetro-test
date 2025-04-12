@@ -1,13 +1,14 @@
 package main
 
 import (
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/cors"
-	"github.com/pressly/goose/v3"
 	"log"
 	"net/http"
 	"reactor-game/backend/db"
 	"reactor-game/backend/handlers"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
+	"github.com/pressly/goose/v3"
 )
 
 func main() {
@@ -29,7 +30,7 @@ func main() {
 
 	// Настраиваем CORS
 	router.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:5173"},
+		AllowedOrigins:   []string{"http://localhost:5173", "https://odmw7y-ip-95-25-160-140.tunnelmole.net"},
 		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Content-Type"},
 		AllowCredentials: false,
@@ -44,7 +45,7 @@ func main() {
 	router.Post("/reactors/buy/{id}", handlers.BuyReactor(database))
 	router.Post("/reactors/use/{id}", handlers.UseReactor(database))
 	router.Post("/auth/telegram", handlers.AuthenticateTelegram(database))
-	// router.Get("/top", handlers.GetLeaderboard(database))
+	router.Get("/top", handlers.GetUsersRating(database))
 
 	log.Println("Server starting on port 8080...")
 	http.ListenAndServe(":8080", router)

@@ -10,6 +10,7 @@ type User struct {
 	FarmStatus    string     `db:"farm_status" json:"farm_status"`
 	FarmStartTime *time.Time `db:"farm_start_time" json:"farm_start_time"` //Указатель, т.к может быть nil
 	FarmProgress  int        `db:"farm_progress" json:"farm_progress"`
+	TelegramID    int64      `db:"telegram_id"`
 }
 
 type Reactor struct {

@@ -15,4 +15,10 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  server: {
+    allowedHosts: [
+      'localhost',
+      'odmw7y-ip-95-25-160-140.tunnelmole.net'
+    ]
+  }
 })

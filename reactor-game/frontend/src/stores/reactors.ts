@@ -20,7 +20,7 @@ export const useReactorsStore = defineStore('reactors', () => {
 
     async function fetchReactors() {
         try {
-            const response = await axios.get("http://localhost:8080/reactors")
+            const response = await axios.get(`http://localhost:8080/reactors?userID=${localStorage.getItem('userID')}`)
             state.reactors = response.data.map((r: any) => ({
                 id: r.id,
                 farmTime: r.farm_time,

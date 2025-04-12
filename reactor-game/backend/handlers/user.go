@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"reactor-game/backend/models"
+	"strconv"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -19,8 +20,14 @@ type UserResponse struct {
 func GetUser(db *sqlx.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var user models.User //id, balance,active_reactor
-		userID := 1
-		err := db.Get(&user, "SELECT * FROM users WHERE id=$1", userID)
+		userIDStr := r.URL.Query().Get("userID")
+		userID, err := strconv.Atoi(userIDStr)
+		if err != nil {
+			http.Error(w, "Invalid id", http.StatusBadRequest)
+			return
+		}
+
+		err = db.Get(&user, "SELECT * FROM users WHERE id=$1", userID)
 		if err != nil {
 			http.Error(w, "User not found", http.StatusNotFound)
 			return

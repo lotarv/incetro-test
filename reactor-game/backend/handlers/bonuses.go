@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"reactor-game/backend/models"
+	"strconv"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -22,8 +23,15 @@ type BonusResponse struct {
 func GetBonuses(db *sqlx.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//1. Находим пользователя
+		userIDStr := r.URL.Query().Get("userID")
+		userID, err := strconv.Atoi(userIDStr)
+		if err != nil {
+			http.Error(w, "Invalid id", http.StatusBadRequest)
+			return
+		}
+		log.Print("Trying to get Bonuses for user with id=", userID)
 		var user models.User
-		err := db.Get(&user, "SELECT * FROM users WHERE id=$1", 1)
+		err = db.Get(&user, "SELECT * FROM users WHERE id=$1", userID)
 		if err != nil {
 			http.Error(w, "user not found", http.StatusNotFound)
 			log.Fatal(err)
@@ -76,9 +84,15 @@ func StartFarming(db *sqlx.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var user models.User
 
-		userID := 1
+		userIDStr := r.URL.Query().Get("userID")
+		userID, err := strconv.Atoi(userIDStr)
+		if err != nil {
+			http.Error(w, "Invalid id", http.StatusBadRequest)
+			return
+		}
+
 		//Находим пользователя
-		err := db.Get(&user, "SELECT * FROM users WHERE id=$1", userID)
+		err = db.Get(&user, "SELECT * FROM users WHERE id=$1", userID)
 		if err != nil {
 			http.Error(w, "User not found", http.StatusNotFound)
 			return
@@ -111,8 +125,14 @@ func ClaimBonuses(db *sqlx.DB) http.HandlerFunc { // /bonuses/claim
 	return func(w http.ResponseWriter, r *http.Request) {
 		var user models.User
 
-		userID := 1
-		err := db.Get(&user, "SELECT * FROM users WHERE id = $1", userID)
+		userIDStr := r.URL.Query().Get("userID")
+		userID, err := strconv.Atoi(userIDStr)
+		if err != nil {
+			http.Error(w, "Invalid id", http.StatusBadRequest)
+			return
+		}
+
+		err = db.Get(&user, "SELECT * FROM users WHERE id = $1", userID)
 		if err != nil {
 			http.Error(w, "User not found", http.StatusNotFound)
 			return

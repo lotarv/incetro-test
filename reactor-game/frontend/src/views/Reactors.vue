@@ -1,7 +1,8 @@
 <template>
     <div class="reactors-container">
         <h2>Reactors</h2>
-        <Carousel :value="reactorsStore.state.reactors" :numVisible="1" :numScroll="1" :showIndicators="true"
+        <div v-if="isLoading" class="loading">Loading reactors..</div>
+        <Carousel v-else-if="reactorsStore.state.reactors.length > 0" :value="reactorsStore.state.reactors" :numVisible="1" :numScroll="1" :showIndicators="true"
             :showNavigators="false" :circular="false" v-model:page="activeIndex" class="reactors-carousel">
             <template #item="slotProps">
                 <div class="slide">
@@ -10,10 +11,11 @@
                 </div>
             </template>
         </Carousel>
+        <div v-else class="no-reactors">No reactors available</div>
         <div v-if="reactorsStore.state.reactors.length > 0" class="reactor-info">
             <div>
                 <span>Farm Time</span>
-                <span>{{ reactorsStore.state.reactors[activeIndex].farmTime }} с</span>
+                <span>{{ reactorsStore.state.reactors[activeIndex].farmTime }} s</span>
             </div>
             <div>
                 <span>Tokens per Cycle</span>
@@ -35,7 +37,7 @@
         :disabled="!isButtonActive()"
         @click="handleButtonClick">
         <span v-if="reactorsStore.state.reactors.length > 0 && userStore.state.ActiveReactor === reactorsStore.state.reactors[activeIndex].id">In use</span>
-        <div v-else-if="!isReactorOwned()">
+        <div v-else-if="reactorsStore.state.reactors.length > 0 && !isReactorOwned()">
             <p class="tokens_value">
                     <span>Buy for</span>
                     <BalanceIcon class="text-black text-[22px]" />
@@ -65,9 +67,18 @@ export default defineComponent({
         const activeIndex = ref(0)
 
         const userStore = useUserStore()
+        const isLoading = ref(true) 
 
         onMounted(async () => {
-            await Promise.all([reactorsStore.fetchReactors(), userStore.fetchUser()])
+            try{
+                await Promise.all([reactorsStore.fetchReactors(), userStore.fetchUser()])
+                console.log("Reactors loaded")
+                console.log("User loaded: ", userStore.state.Reactors)
+            } catch(error) {
+                console.error("Failed to load data: ", error)
+            } finally {
+                isLoading.value = false
+            }
         })
 
         function isReactorOwned() {
@@ -106,7 +117,8 @@ export default defineComponent({
             userStore,
             isReactorOwned,
             isButtonActive,
-            handleButtonClick
+            handleButtonClick,
+            isLoading
         }
     }
 })
