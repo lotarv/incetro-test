@@ -5,11 +5,10 @@ import Login from "../views/Login.vue"
 import Top from "../views/Top.vue"
 
 const routes = [
-    {path: "/", redirect: "/login"},
+    {path: "/", redirect: "/bonuses"},
     {path: "/bonuses", component: Bonuses},
     {path: "/reactors", component: Reactors},
     {path: "/top", component: Top},
-    {path: "/login", component: Login}
 ]
 
 const router = createRouter({

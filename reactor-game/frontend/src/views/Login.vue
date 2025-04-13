@@ -36,7 +36,6 @@ export default defineComponent({
                 const response = await axios.post(`${API_BASE_URL}/auth/telegram`, {initData})
                 const userID = response.data.user_id
                 localStorage.setItem('userID', userID)
-                alert("Login successfull! User ID: " + userID)
                 router.push('/bonuses')
 
             } catch(error) {

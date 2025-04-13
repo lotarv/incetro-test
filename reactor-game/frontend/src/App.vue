@@ -1,6 +1,12 @@
 <template>
   <div class="app-container">
-    <div class="content">
+    <div v-if="error" class="error-container">
+        <p class="error">{{ error }}</p>
+        <button @click="retryLogin" :disabled="isLoading">
+            {{ isLoading? "Retrying..." : "Try Again" }}
+        </button>
+    </div>
+    <div v-else class="content">
       <router-view></router-view>
     </div>
     <nav class="tab-bar">
@@ -21,10 +27,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue'
 import ChipikIcon from "./components/icons/СhipikIcon.vue"
 import LightningIcon from './components/icons/LightningIcon.vue'
 import TopIcon from './components/icons/TopIcon.vue'
+import {useRouter} from "vue-router"
+import axios from 'axios'
+import {API_BASE_URL} from "./config"
 export default defineComponent({
   name: 'App',
   components: {
@@ -33,11 +42,58 @@ export default defineComponent({
     TopIcon,
   },
   setup() {
+    const router = useRouter();
+    const isLoading = ref(false);
+    const error = ref('');
+
+    const loginWithTelegram = async () => {
+
+      isLoading.value = true;
+      error.value = '';
+
+      try {
+        if (!window.Telegram?.WebApp) {
+          throw new Error('Please open this app in Telegram');
+        }
+
+        const initData = window.Telegram.WebApp.initData;
+        if (!initData) {
+          throw new Error('Unable to get Telegram user data');
+        }
+
+        console.log('Sending initData:', initData);
+
+        const response = await axios.post(`${API_BASE_URL}/auth/telegram`, {initData})
+        const userId = response.data.user_id.toString();
+        console.log("userID: ", userId)
+        localStorage.setItem('userID', userId);
+
+        router.push('/bonuses');
+      } catch (err: any) {
+        error.value = err.message || 'Login failed';
+        console.error('Login error:', err);
+      } finally {
+        isLoading.value = false;
+      }
+    };
+
+    const retryLogin = () => {
+      loginWithTelegram();
+    };
+
+    // Запускаем авторизацию при загрузке
+    onMounted(() => {
+        console.log("Autorise")
+        loginWithTelegram();
+    });
+
     return {
-      localStorage
-    }
-  }
-})
+      isLoading,
+      error,
+      retryLogin,
+    };
+  },
+});
 
 </script>
 
