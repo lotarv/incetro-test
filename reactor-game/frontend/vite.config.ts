@@ -18,7 +18,7 @@ export default defineConfig({
   server: {
     allowedHosts: [
       'localhost',
-      'odmw7y-ip-95-25-160-140.tunnelmole.net'
+      've5u7w-ip-95-25-160-140.tunnelmole.net'
     ]
   }
 })

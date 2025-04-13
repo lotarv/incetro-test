@@ -44,11 +44,9 @@ export default defineComponent({
 <style scoped>
 .app-container {
   max-width: 480px;
-  max-height: 720px;
   margin:0 auto;
   font-family: 'Montserrat', sans-serif;
-  height:100vh;
-  max-height: 930px;
+  min-height: 720px;
   display: flex;
   flex-direction: column;
   border-radius: 15px;
@@ -69,6 +67,8 @@ export default defineComponent({
   width:100%;
   justify-content: space-around;
   padding-top:10px;
+  background-color: hsl(0,0%,100%);
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
 
 }
 .tab-link{

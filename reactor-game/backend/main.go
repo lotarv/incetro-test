@@ -30,7 +30,7 @@ func main() {
 
 	// Настраиваем CORS
 	router.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:5173", "https://odmw7y-ip-95-25-160-140.tunnelmole.net"},
+		AllowedOrigins:   []string{"http://localhost:5173", "https://ve5u7w-ip-95-25-160-140.tunnelmole.net"},
 		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Content-Type"},
 		AllowCredentials: false,

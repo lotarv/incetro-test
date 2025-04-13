@@ -128,17 +128,19 @@ export default defineComponent({
 .reactors-container {
     padding: 15px;
     background-color: hsl(0, 0%, 100%);
-    height: 100%;
+    height: 720px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap:10px;
+    color:black;
 }
 
 h2 {
     margin-bottom: 20px;
     font-size: 24px;
     font-weight: 600;
+    margin-top:20px;
 }
 
 .reactors-carousel {

@@ -75,8 +75,9 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height:100%;
+    height:720px;
     padding:15px;
+    color:black;
 }
 
 .balance-item{

@@ -1,6 +1,6 @@
 <template>
     <div class="login-container">
-        <h2>Login to Reactors Game</h2>
+        <TelegramIcon class="telegram-icon"/>
         <button @click="loginWithTelegram" class="telegram-button">Login with Telegram</button>
     </div>
 </template>
@@ -10,9 +10,13 @@ import {defineComponent} from 'vue'
 import {useRouter} from "vue-router" 
 import axios from 'axios'
 import {API_BASE_URL} from "../config"
+import TelegramIcon from "../components/icons/TelegramIcon.vue"
 
 export default defineComponent({
     name: "Login",
+    components: {
+        TelegramIcon,
+    },
     setup() {
         const router = useRouter()
         async function loginWithTelegram() {
@@ -54,18 +58,22 @@ export default defineComponent({
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
   background-color: hsl(0, 0%, 95%);
+  height: 720px;
+  gap:25px;
 }
-
+.telegram-icon{
+    width:200px;
+}
 .telegram-button {
   padding: 15px 30px;
   font-size: 18px;
-  background-color: #0088cc;
+  background-color: #28A8E8;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 16px;
   cursor: pointer;
+  font-weight: 600;
 }
 
 .telegram-button:hover {

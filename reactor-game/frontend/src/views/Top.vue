@@ -54,6 +54,9 @@ export default defineComponent({
     flex-direction: column;
     justify-content: center;
     padding:20px;
+    background-color: hsl(0, 0%, 95%);
+    color:black;
+    height:720px;
 }
 .title{
     font-size: 22px;
